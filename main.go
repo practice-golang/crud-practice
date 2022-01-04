@@ -1,4 +1,4 @@
-package main
+package main // import "db-crud"
 
 import (
 	"database/sql"
@@ -9,19 +9,21 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Book 구조체
+// Book
 type Book struct {
 	ID     int
 	Title  string
 	Author string
 }
 
+var DatabaseAddress = "tcp(localhost:13306)"
+
 func dbConn() (db *sql.DB) {
 	dbDriver := "mysql"
 	dbUser := "root"
 	dbPass := ""
 	dbName := "myslimsite"
-	dbHost := "tcp(localhost:13306)"
+	dbHost := DatabaseAddress
 	db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@"+dbHost+"/"+dbName)
 	if err != nil {
 		panic(err.Error())
@@ -30,15 +32,22 @@ func dbConn() (db *sql.DB) {
 }
 
 // InsertData : Crud
-func InsertData(title string, author string, table string) {
+func InsertData(book Book, table string) (sql.Result, error) {
 	db := dbConn()
 	defer db.Close()
 
-	sql, err := db.Prepare("insert into " + table + "(title, author) values(?, ?)")
+	sql := `INSERT INTO ` + table + `(title, author) VALUES (?, ?)`
+	stmt, err := db.Prepare(sql)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
-	sql.Exec(title, author)
+
+	result, err := stmt.Exec(book.Title, book.Author)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // SelectData : cRud
@@ -131,7 +140,12 @@ func main() {
 		bookName := os.Args[2:3]
 		authorName := os.Args[3:4]
 
-		InsertData(bookName[0], authorName[0], table)
+		book := Book{
+			Title:  bookName[0],
+			Author: authorName[0],
+		}
+
+		InsertData(book, table)
 	case "select":
 		var id int
 
