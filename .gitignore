@@ -3,3 +3,6 @@ pkg
 bin
 db-crud.exe
 mariadata/
+pgdata/
+pglog
+
