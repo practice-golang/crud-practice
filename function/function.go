@@ -116,6 +116,13 @@ func UpdateData(book model.Book) (int64, error) {
 			TITLE=?, AUTHOR=?
 		WHERE IDX=?
 		`
+	if db.Info.DatabaseType == db.POSTGRES {
+		sql = `
+			UPDATE ` + tablename + ` SET
+				"TITLE"=$1, "AUTHOR"=$2
+			WHERE "IDX"=$3
+		`
+	}
 	changeValues := []interface{}{book.Title, book.Author}
 	whereValues := []interface{}{book.ID}
 	colValues := append(changeValues, whereValues...)
