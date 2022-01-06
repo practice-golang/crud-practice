@@ -1,4 +1,4 @@
-module practice-crud
+module crud-practice
 
 go 1.17
 

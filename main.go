@@ -1,13 +1,13 @@
-package main // import "practice-crud"
+package main // import "crud-practice"
 
 import (
+	"crud-practice/config"
+	"crud-practice/db"
+	"crud-practice/function"
+	"crud-practice/model"
 	"fmt"
 	"log"
 	"os"
-	"practice-crud/config"
-	"practice-crud/db"
-	"practice-crud/function"
-	"practice-crud/model"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"

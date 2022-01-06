@@ -1,6 +1,6 @@
 package function
 
-import "practice-crud/db"
+import "crud-practice/db"
 
 func getTableName() string {
 	tablename := ""
