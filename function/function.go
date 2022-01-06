@@ -4,14 +4,21 @@ import (
 	"crud-practice/db"
 	"crud-practice/model"
 	"errors"
+	"log"
 
 	"github.com/blockloop/scan"
+	"github.com/practice-golang/np"
 )
 
 func InsertData(book model.Book) (int64, int64, error) {
 	var err error
 	var succeedCount int64 = 0
 	var succeedIDX int64 = 0
+
+	colNameTest1 := np.MakeSlice(book)
+	log.Println(colNameTest1)
+	colNameTest2 := np.MakeMap(book)
+	log.Println(colNameTest2)
 
 	colNameSTR := "`TITLE`, `AUTHOR`"
 	colValueCavitySTR := `?, ?`
@@ -36,21 +43,9 @@ func InsertData(book model.Book) (int64, int64, error) {
 			(` + colValueCavitySTR + `)
 		`
 
-	if db.Info.DatabaseType == db.POSTGRES {
-		sql += ` RETURNING "IDX"`
-		err = db.Con.QueryRow(sql, colValues...).Scan(&succeedIDX)
-		if err != nil {
-			return succeedCount, succeedIDX, err
-		}
-		succeedCount = 1
-	} else {
-		r, err := db.Con.Exec(sql, colValues...)
-		if err != nil {
-			return succeedCount, succeedIDX, err
-		}
-
-		succeedCount, _ = r.RowsAffected()
-		succeedIDX, _ = r.LastInsertId()
+	succeedCount, succeedIDX, err = db.Obj.Exec(sql, colValues, "IDX")
+	if err != nil {
+		return succeedCount, succeedIDX, err
 	}
 
 	return succeedCount, succeedIDX, nil
@@ -82,20 +77,6 @@ func SelectData(id int) ([]model.Book, error) {
 		return nil, err
 	}
 
-	// for r.Next() {
-	// 	var title string
-	// 	var author string
-	// 	err = r.Scan(&title, &author)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	res := model.Book{
-	// 		Title:  null.StringFrom(title),
-	// 		Author: null.StringFrom(author),
-	// 	}
-	// 	result = append(result, res)
-	// }
-
 	err = scan.Rows(&result, r)
 	if err != nil {
 		return nil, err
@@ -120,7 +101,7 @@ func UpdateData(book model.Book) (int64, error) {
 		`
 	}
 	changeValues := []interface{}{book.Title, book.Author}
-	whereValues := []interface{}{book.ID}
+	whereValues := []interface{}{book.Idx}
 	colValues := append(changeValues, whereValues...)
 
 	r, err := db.Con.Exec(sql, colValues...)

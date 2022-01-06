@@ -31,6 +31,7 @@ type (
 		CreateDB() error
 		CreateTable() error
 		connect() (*sql.DB, error)
+		Exec(string, []interface{}, string) (int64, int64, error)
 	}
 )
 
@@ -54,8 +55,6 @@ func SetupDB() error {
 			return err
 		}
 
-		break
-
 	case MYSQL:
 		// dsn := Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Protocol + "(" + Info.Addr + ":" + Info.Port + ")/" + Info.DatabaseName
 		dsn := Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Protocol + "(" + Info.Addr + ":" + Info.Port + ")/"
@@ -66,8 +65,6 @@ func SetupDB() error {
 			return err
 		}
 
-		break
-
 	case POSTGRES:
 		dsn := `host=` + Info.Addr + ` port=` + Info.Port + ` user=` + Info.GrantID + ` password=` + Info.GrantPassword + ` dbname=` + Info.DatabaseName + ` sslmode=disable`
 		Obj = &Postgres{dsn: dsn}
@@ -76,8 +73,6 @@ func SetupDB() error {
 		if err != nil {
 			return err
 		}
-
-		break
 
 	default:
 		return errors.New("nothing to support DB")

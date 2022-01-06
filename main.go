@@ -32,8 +32,8 @@ func main() {
 
 	command := os.Args[1:2]
 
-	// db.Info = config.DatabaseInfoSQLite
-	db.Info = config.DatabaseInfoMySQL
+	db.Info = config.DatabaseInfoSQLite
+	// db.Info = config.DatabaseInfoMySQL
 	// db.Info = config.DatabaseInfoPgPublic
 	// db.Info = config.DatabaseInfoPgSchema
 	// db.Info = config.DatabaseInfoPgOtherDatabase
@@ -91,7 +91,7 @@ func main() {
 		}
 
 		for _, book := range books {
-			log.Println(book.ID, book.Title, book.Author)
+			log.Println(book.Idx, book.Title, book.Author)
 		}
 
 	case "update":
@@ -103,7 +103,7 @@ func main() {
 			id, _ = strconv.Atoi(os.Args[2:3][0])
 
 			book := model.Book{
-				ID:     null.IntFrom(int64(id)),
+				Idx:     null.IntFrom(int64(id)),
 				Title:  null.StringFrom(os.Args[3:4][0]),
 				Author: null.StringFrom(os.Args[4:5][0]),
 			}
