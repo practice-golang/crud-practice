@@ -5,7 +5,7 @@ import (
 	"crud-practice/model"
 	"errors"
 
-	"gopkg.in/guregu/null.v4"
+	"github.com/blockloop/scan"
 )
 
 func InsertData(book model.Book) (int64, int64, error) {
@@ -18,11 +18,9 @@ func InsertData(book model.Book) (int64, int64, error) {
 	switch {
 	case db.Info.DatabaseType == db.SQLITE:
 		colNameSTR = `"TITLE", "AUTHOR"`
-		break
 	case db.Info.DatabaseType == db.POSTGRES:
 		colNameSTR = `"TITLE", "AUTHOR"`
 		colValueCavitySTR = `$1, $2`
-		break
 	}
 
 	colValues := []interface{}{}
@@ -65,10 +63,8 @@ func SelectData(id int) ([]model.Book, error) {
 	switch {
 	case db.Info.DatabaseType == db.SQLITE:
 		colNameSTR = `"TITLE", "AUTHOR"`
-		break
 	case db.Info.DatabaseType == db.POSTGRES:
 		colNameSTR = `"TITLE", "AUTHOR"`
-		break
 	}
 
 	whereSTR := []interface{}{}
@@ -86,24 +82,24 @@ func SelectData(id int) ([]model.Book, error) {
 		return nil, err
 	}
 
-	for r.Next() {
-		var title string
-		var author string
-		err = r.Scan(&title, &author)
-		if err != nil {
-			return nil, err
-		}
-		res := model.Book{
-			Title:  null.StringFrom(title),
-			Author: null.StringFrom(author),
-		}
-		result = append(result, res)
-	}
-
-	// err = scan.Rows(&result, r)
-	// if err != nil {
-	// 	return nil, err
+	// for r.Next() {
+	// 	var title string
+	// 	var author string
+	// 	err = r.Scan(&title, &author)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	res := model.Book{
+	// 		Title:  null.StringFrom(title),
+	// 		Author: null.StringFrom(author),
+	// 	}
+	// 	result = append(result, res)
 	// }
+
+	err = scan.Rows(&result, r)
+	if err != nil {
+		return nil, err
+	}
 
 	return result, nil
 }

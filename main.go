@@ -33,8 +33,8 @@ func main() {
 	command := os.Args[1:2]
 
 	// db.Info = config.DatabaseInfoSQLite
-	// db.Info = config.DatabaseInfoMySQL
-	db.Info = config.DatabaseInfoPgPublic
+	db.Info = config.DatabaseInfoMySQL
+	// db.Info = config.DatabaseInfoPgPublic
 	// db.Info = config.DatabaseInfoPgSchema
 	// db.Info = config.DatabaseInfoPgOtherDatabase
 
@@ -73,8 +73,6 @@ func main() {
 
 		log.Println("Insert idx, count:", idx, count)
 
-		break
-
 	case "select":
 		var id int
 
@@ -91,11 +89,10 @@ func main() {
 		if err != nil {
 			log.Fatal("SelectData:", err)
 		}
+
 		for _, book := range books {
 			log.Println(book.ID, book.Title, book.Author)
 		}
-
-		break
 
 	case "update":
 		var id int
@@ -119,8 +116,6 @@ func main() {
 			log.Println("Update count:", count)
 		}
 
-		break
-
 	case "delete":
 		var id int
 
@@ -139,8 +134,6 @@ func main() {
 		}
 
 		log.Println("Delete count:", count)
-
-		break
 
 	default:
 		log.Println("check inputed parameters")
