@@ -1,4 +1,4 @@
-module db-crud
+module practice-crud
 
 go 1.17
 

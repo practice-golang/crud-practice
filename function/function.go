@@ -1,9 +1,9 @@
 package function
 
 import (
-	"db-crud/db"
-	"db-crud/model"
 	"errors"
+	"practice-crud/db"
+	"practice-crud/model"
 
 	"gopkg.in/guregu/null.v4"
 )

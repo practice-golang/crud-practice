@@ -1,7 +1,7 @@
 .DS_Store
 pkg
 bin
-db-crud.exe
+practice-crud.exe
 mariadata/
 pgdata/
 pglog

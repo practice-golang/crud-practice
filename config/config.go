@@ -1,6 +1,6 @@
 package config
 
-import "db-crud/db"
+import "practice-crud/db"
 
 var DatabaseInfoSQLite = db.DBInfo{
 	DatabaseType: db.SQLITE,
