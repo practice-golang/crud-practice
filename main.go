@@ -32,9 +32,9 @@ func main() {
 
 	command := os.Args[1:2]
 
-	// db.Info = config.DatabaseInfoSQLite
+	db.Info = config.DatabaseInfoSQLite
 	// db.Info = config.DatabaseInfoMySQL
-	db.Info = config.DatabaseInfoPgPublic
+	// db.Info = config.DatabaseInfoPgPublic
 	// db.Info = config.DatabaseInfoPgSchema
 	// db.Info = config.DatabaseInfoPgOtherDatabase
 

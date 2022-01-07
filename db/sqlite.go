@@ -6,6 +6,15 @@ import (
 
 type SQLite struct{ dsn string }
 
+func (d *SQLite) connect() (*sql.DB, error) {
+	db, err := sql.Open("sqlite", d.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
 // CreateDB - enough to use connect so, not use
 func (d *SQLite) CreateDB() error { return nil }
 
@@ -24,15 +33,6 @@ func (d *SQLite) CreateTable() error {
 	}
 
 	return nil
-}
-
-func (d *SQLite) connect() (*sql.DB, error) {
-	db, err := sql.Open("sqlite", d.dsn)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }
 
 func (d *SQLite) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {

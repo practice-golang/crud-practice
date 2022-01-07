@@ -28,9 +28,9 @@ type (
 	}
 
 	DBObject interface {
+		connect() (*sql.DB, error)
 		CreateDB() error
 		CreateTable() error
-		connect() (*sql.DB, error)
 		// Exec - Almost Same as sql.Exec()
 		// Because of PostgreSQL, INSERT query and RETURN id way is not enough to use sql.Exec()
 		// Return affected rows, last insert id, error
