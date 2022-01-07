@@ -2,8 +2,8 @@ package main // import "crud-practice"
 
 import (
 	"crud-practice/config"
+	"crud-practice/crud"
 	"crud-practice/db"
-	"crud-practice/function"
 	"crud-practice/model"
 	"fmt"
 	"log"
@@ -66,7 +66,7 @@ func main() {
 			Author: null.StringFrom(os.Args[3:4][0]),
 		}
 
-		idx, count, err := function.InsertData(book)
+		idx, count, err := crud.InsertData(book)
 		if err != nil {
 			log.Fatal("InsertData:", err)
 		}
@@ -74,18 +74,16 @@ func main() {
 		log.Println("Insert idx, count:", idx, count)
 
 	case "select":
-		var id int
+		var id int = 0
 
 		if argLen < 1 {
 			log.Fatal("Need more params")
 		} else if argLen == 2 {
 			idStr := os.Args[2:3]
 			id, _ = strconv.Atoi(idStr[0])
-		} else {
-			id = 0
 		}
 
-		books, err := function.SelectData(id)
+		books, err := crud.SelectData(id)
 		if err != nil {
 			log.Fatal("SelectData:", err)
 		}
@@ -108,7 +106,7 @@ func main() {
 				Author: null.StringFrom(os.Args[4:5][0]),
 			}
 
-			count, err := function.UpdateData(book)
+			count, err := crud.UpdateData(book)
 			if err != nil {
 				log.Fatal("UpdateData:", err)
 			}
@@ -128,7 +126,7 @@ func main() {
 			id = 0
 		}
 
-		count, err := function.DeleteData(id)
+		count, err := crud.DeleteData(id)
 		if err != nil {
 			log.Fatal("DeleteData:", err)
 		}

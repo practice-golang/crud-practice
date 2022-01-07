@@ -1,4 +1,4 @@
-package function
+package crud
 
 import (
 	"crud-practice/db"
@@ -16,17 +16,17 @@ func InsertData(book model.Book) (int64, int64, error) {
 		idx   int64 = 0
 	)
 
-	dbtype := getDatabaseTypeString()
-	tablename := getTableName()
+	dbtype := db.GetDatabaseTypeString()
+	tablename := db.GetTableName()
 
-	colNames := np.CreateString(book, dbtype, "insert").Names
+	columns := np.CreateString(book, dbtype, "insert").Names
 
-	colValueBinds, err := np.CreateHolders(dbtype, colNames)
+	holders, err := np.CreateHolders(dbtype, columns)
 	if err != nil {
 		return count, idx, err
 	}
 
-	sql := ` INSERT INTO ` + tablename + ` (` + colNames + `) VALUES (` + colValueBinds + `)`
+	sql := ` INSERT INTO ` + tablename + ` (` + columns + `) VALUES (` + holders + `)`
 	colSlice := np.CreateMapSlice(book, "insert")
 
 	count, idx, err = db.Obj.Exec(sql, colSlice["values"], "IDX")
@@ -40,14 +40,14 @@ func InsertData(book model.Book) (int64, int64, error) {
 func SelectData(id int) ([]model.Book, error) {
 	result := []model.Book{}
 
-	dbtype := getDatabaseTypeString()
-	tablename := getTableName()
+	dbtype := db.GetDatabaseTypeString()
+	tablename := db.GetTableName()
 
 	book := model.Book{}
 
-	colNames := np.CreateString(book, dbtype, "").Names
+	columns := np.CreateString(book, dbtype, "").Names
 
-	sql := `SELECT ` + colNames + ` FROM ` + tablename
+	sql := `SELECT ` + columns + ` FROM ` + tablename
 
 	where := []interface{}{}
 	if id > 0 {
@@ -69,12 +69,12 @@ func SelectData(id int) ([]model.Book, error) {
 }
 
 func UpdateData(book model.Book) (int64, error) {
-	dbtype := getDatabaseTypeString()
-	tablename := getTableName()
+	dbtype := db.GetDatabaseTypeString()
+	tablename := db.GetTableName()
 
 	columns := np.CreateString(book, dbtype, "").Names
 	directive, offset, _ := np.CreateUpdateHolders(dbtype, columns, 0)
-	where, _, _ := np.CreateUpdateHolders(dbtype, quotesName("IDX"), offset)
+	where, _, _ := np.CreateUpdateHolders(dbtype, db.QuotesName("IDX"), offset)
 
 	sql := `UPDATE ` + tablename + ` SET ` + directive + ` WHERE ` + where
 
@@ -95,10 +95,10 @@ func UpdateData(book model.Book) (int64, error) {
 func DeleteData(id int) (int64, error) {
 	var count int64 = 0
 
-	tablename := getTableName()
+	tablename := db.GetTableName()
 
 	if id > 0 {
-		sql := `DELETE FROM ` + tablename + ` WHERE IDX=?`
+		sql := `DELETE FROM ` + tablename + ` WHERE ` + db.QuotesName("IDX") + `=?`
 		whereValues := []interface{}{id}
 
 		r, err := db.Con.Exec(sql, whereValues...)
