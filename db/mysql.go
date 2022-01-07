@@ -45,7 +45,6 @@ func (d *Mysql) connect() (*sql.DB, error) {
 	return db, nil
 }
 
-// Exec - Execute SQL. Return affected rows, last insert id, error
 func (d *Mysql) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {
 	var err error
 	var count int64 = 0

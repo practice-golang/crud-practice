@@ -3,76 +3,59 @@ package function
 import (
 	"crud-practice/db"
 	"crud-practice/model"
+	"crud-practice/np"
 	"errors"
-	"log"
 
 	"github.com/blockloop/scan"
-	"github.com/practice-golang/np"
 )
 
 func InsertData(book model.Book) (int64, int64, error) {
-	var err error
-	var succeedCount int64 = 0
-	var succeedIDX int64 = 0
+	var (
+		err   error
+		count int64 = 0
+		idx   int64 = 0
+	)
 
-	colNameTest1 := np.MakeSlice(book)
-	log.Println(colNameTest1)
-	colNameTest2 := np.MakeMap(book)
-	log.Println(colNameTest2)
-
-	colNameSTR := "`TITLE`, `AUTHOR`"
-	colValueCavitySTR := `?, ?`
-	switch {
-	case db.Info.DatabaseType == db.SQLITE:
-		colNameSTR = `"TITLE", "AUTHOR"`
-	case db.Info.DatabaseType == db.POSTGRES:
-		colNameSTR = `"TITLE", "AUTHOR"`
-		colValueCavitySTR = `$1, $2`
-	}
-
-	colValues := []interface{}{}
-	colValues = append(colValues, book.Title)
-	colValues = append(colValues, book.Author)
-
+	dbtype := getDatabaseTypeString()
 	tablename := getTableName()
 
-	sql := `
-		INSERT INTO ` + tablename + `
-			(` + colNameSTR + `)
-		VALUES
-			(` + colValueCavitySTR + `)
-		`
+	colNames := np.CreateString(book, dbtype, "insert").Names
 
-	succeedCount, succeedIDX, err = db.Obj.Exec(sql, colValues, "IDX")
+	colValueBinds, err := np.CreateHolders(dbtype, colNames)
 	if err != nil {
-		return succeedCount, succeedIDX, err
+		return count, idx, err
 	}
 
-	return succeedCount, succeedIDX, nil
+	sql := ` INSERT INTO ` + tablename + ` (` + colNames + `) VALUES (` + colValueBinds + `)`
+	colSlice := np.CreateMapSlice(book, "insert")
+
+	count, idx, err = db.Obj.Exec(sql, colSlice["values"], "IDX")
+	if err != nil {
+		return count, idx, err
+	}
+
+	return count, idx, nil
 }
 
 func SelectData(id int) ([]model.Book, error) {
 	result := []model.Book{}
 
-	colNameSTR := "`TITLE`, `AUTHOR`"
-	switch {
-	case db.Info.DatabaseType == db.SQLITE:
-		colNameSTR = `"TITLE", "AUTHOR"`
-	case db.Info.DatabaseType == db.POSTGRES:
-		colNameSTR = `"TITLE", "AUTHOR"`
-	}
-
-	whereSTR := []interface{}{}
-
+	dbtype := getDatabaseTypeString()
 	tablename := getTableName()
 
-	sql := `SELECT ` + colNameSTR + ` FROM ` + tablename
+	book := model.Book{}
+
+	colNames := np.CreateString(book, dbtype, "").Names
+
+	sql := `SELECT ` + colNames + ` FROM ` + tablename
+
+	where := []interface{}{}
 	if id > 0 {
 		sql += ` WHERE IDX=?`
-		whereSTR = append(whereSTR, id)
+		where = append(where, id)
 	}
 
-	r, err := db.Con.Query(sql, whereSTR...)
+	r, err := db.Con.Query(sql, where...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,55 +69,47 @@ func SelectData(id int) ([]model.Book, error) {
 }
 
 func UpdateData(book model.Book) (int64, error) {
+	dbtype := getDatabaseTypeString()
 	tablename := getTableName()
 
-	sql := `
-		UPDATE ` + tablename + ` SET
-			TITLE=?, AUTHOR=?
-		WHERE IDX=?
-		`
-	if db.Info.DatabaseType == db.POSTGRES {
-		sql = `
-			UPDATE ` + tablename + ` SET
-				"TITLE"=$1, "AUTHOR"=$2
-			WHERE "IDX"=$3
-		`
-	}
-	changeValues := []interface{}{book.Title, book.Author}
-	whereValues := []interface{}{book.Idx}
-	colValues := append(changeValues, whereValues...)
+	columns := np.CreateString(book, dbtype, "").Names
+	directive, offset, _ := np.CreateUpdateHolders(dbtype, columns, 0)
+	where, _, _ := np.CreateUpdateHolders(dbtype, quotesName("IDX"), offset)
 
-	r, err := db.Con.Exec(sql, colValues...)
+	sql := `UPDATE ` + tablename + ` SET ` + directive + ` WHERE ` + where
+
+	updateValues := []interface{}{book.Title, book.Author}
+	whereValues := []interface{}{book.Idx}
+	values := append(updateValues, whereValues...)
+
+	r, err := db.Con.Exec(sql, values...)
 	if err != nil {
 		return 0, err
 	}
 
-	succeedCount, _ := r.RowsAffected()
+	count, _ := r.RowsAffected()
 
-	return succeedCount, nil
+	return count, nil
 }
 
 func DeleteData(id int) (int64, error) {
-	var succeedCount int64 = 0
+	var count int64 = 0
 
 	tablename := getTableName()
 
 	if id > 0 {
-		sql := `
-			DELETE FROM ` + tablename + `
-			WHERE IDX=?
-			`
+		sql := `DELETE FROM ` + tablename + ` WHERE IDX=?`
 		whereValues := []interface{}{id}
 
 		r, err := db.Con.Exec(sql, whereValues...)
 		if err != nil {
-			return succeedCount, err
+			return count, err
 		}
 
-		succeedCount, _ = r.RowsAffected()
+		count, _ = r.RowsAffected()
 	} else {
-		return succeedCount, errors.New("id value have to be larger than 0")
+		return count, errors.New("idx value have to exist and to be larger than 0")
 	}
 
-	return succeedCount, nil
+	return count, nil
 }

@@ -31,6 +31,10 @@ type (
 		CreateDB() error
 		CreateTable() error
 		connect() (*sql.DB, error)
+		// Exec - Almost Same as sql.Exec()
+		// Because of PostgreSQL, INSERT query and RETURN id way is not enough to use sql.Exec()
+		// Return affected rows, last insert id, error
+		// Not return sql.Result
 		Exec(string, []interface{}, string) (int64, int64, error)
 	}
 )

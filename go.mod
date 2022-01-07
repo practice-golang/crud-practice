@@ -6,7 +6,6 @@ require (
 	github.com/blockloop/scan v1.3.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/lib/pq v1.10.4
-	github.com/practice-golang/np v0.0.4
 	gopkg.in/guregu/null.v4 v4.0.0
 	modernc.org/sqlite v1.14.3
 )
