@@ -18,6 +18,7 @@ func GetTableName() string {
 
 func GetDatabaseTypeString() string {
 	dbtype := ""
+
 	switch Info.DatabaseType {
 	case SQLITE:
 		dbtype = "sqlite"
