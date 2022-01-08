@@ -6,3 +6,6 @@ mariadata/
 pgdata/
 pglog
 
+coverage.out
+coverage.html
+/codecov.*
