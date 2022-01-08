@@ -11,7 +11,7 @@ import (
 // like ? or $1, $2.. from column names
 func CreateHolders(dbtype, colNames string) (string, error) {
 	var err error
-	var binding string
+	var holders string
 
 	if strings.TrimSpace(colNames) == "" {
 		return "", errors.New("colNames is empty")
@@ -21,21 +21,21 @@ func CreateHolders(dbtype, colNames string) (string, error) {
 	switch strings.ToLower(dbtype) {
 	case "postgres":
 		for i := 0; i < count; i++ {
-			binding += "$" + fmt.Sprint(i+1)
+			holders += "$" + fmt.Sprint(i+1)
 			if i < count-1 {
-				binding += ","
+				holders += ","
 			}
 		}
 	default:
 		for i := 0; i < count; i++ {
-			binding += "?"
+			holders += "?"
 			if i < count-1 {
-				binding += ","
+				holders += ","
 			}
 		}
 	}
 
-	return binding, err
+	return holders, err
 }
 
 // CreateUpdateHolders
@@ -43,7 +43,7 @@ func CreateHolders(dbtype, colNames string) (string, error) {
 // like FIELDA=?, FIELDB=? or FIELDA=$1, FIELDB=$2.. from column names
 func CreateUpdateHolders(dbtype string, columnNames interface{}, offset int) (string, int, error) {
 	var err error
-	var binding string
+	var holders string
 
 	colNames := []string{}
 	count := 0
@@ -66,10 +66,12 @@ func CreateUpdateHolders(dbtype string, columnNames interface{}, offset int) (st
 		colNames = cnames
 		count = len(colNames)
 
-	case map[string]string:
-		for k := range cnames {
-			colNames = append(colNames, k)
-		}
+		// Because of not garanted order of map keys
+		// case map[string]string:
+		// 	for k := range cnames {
+		// 		colNames = append(colNames, k)
+		// 	}
+		// 	count = len(colNames)
 	}
 
 	for i := 0; i < count; i++ {
@@ -77,11 +79,11 @@ func CreateUpdateHolders(dbtype string, columnNames interface{}, offset int) (st
 		if dbtype == "postgres" {
 			holder = "$" + fmt.Sprint(i+1+offset)
 		}
-		binding += colNames[i] + "=" + holder
+		holders += colNames[i] + "=" + holder
 		if i < count-1 {
-			binding += ","
+			holders += ","
 		}
 	}
 
-	return binding, count, err
+	return holders, count, err
 }

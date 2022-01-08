@@ -146,7 +146,7 @@ func CreateMapSlice(o interface{}, skipValue string) map[string][]interface{} {
 			case ov.Field(i).Kind() == reflect.Struct:
 				// Maybe null.String, null.Int..
 				valueStruct := CreateMapSlice(ov.Field(i).Interface(), skipValue)
-				if len(valueStruct["names"]) > 0 {
+				if len(valueStruct["names"]) > 0 && valueStruct["names"][0] != "" {
 					names = append(names, valueStruct["names"]...)
 				} else {
 					names = append(names, ov.Type().Field(i).Tag.Get(TagName))
@@ -219,8 +219,9 @@ func CreateMap(o interface{}, skipValue string) map[string]string {
 				// Maybe null.String, null.Int..
 				valueStruct := CreateMap(ov.Field(i).Interface(), skipValue)
 				if len(valueStruct) > 0 {
-					for n, v := range valueStruct {
-						pairs[n] = v
+					for _, v := range valueStruct {
+						name := ov.Type().Field(i).Tag.Get(TagName)
+						pairs[name] = v
 					}
 				}
 

@@ -5,6 +5,7 @@ import (
 	"crud-practice/crud"
 	"crud-practice/db"
 	"crud-practice/model"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -16,7 +17,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func main() {
+func doJob() error {
 	var err error
 
 	// 실행파일(#1) 명령(#2) 대상(#3...)
@@ -31,12 +32,6 @@ func main() {
 	}
 
 	command := os.Args[1:2]
-
-	db.Info = config.DatabaseInfoSQLite
-	// db.Info = config.DatabaseInfoMySQL
-	// db.Info = config.DatabaseInfoPgPublic
-	// db.Info = config.DatabaseInfoPgSchema
-	// db.Info = config.DatabaseInfoPgOtherDatabase
 
 	err = db.SetupDB()
 	if err != nil {
@@ -57,8 +52,7 @@ func main() {
 	switch command[0] {
 	case "insert":
 		if argLen < 3 {
-			fmt.Println(command[0] + ": Need more params")
-			os.Exit(1)
+			return errors.New(command[0] + ": Need more params")
 		}
 
 		book := model.Book{
@@ -68,7 +62,7 @@ func main() {
 
 		idx, count, err := crud.InsertData(book)
 		if err != nil {
-			log.Fatal("InsertData:", err)
+			return err
 		}
 
 		log.Println("Insert idx, count:", idx, count)
@@ -77,7 +71,7 @@ func main() {
 		var id int = 0
 
 		if argLen < 1 {
-			log.Fatal("Need more params")
+			return errors.New(command[0] + ": Need more params")
 		} else if argLen == 2 {
 			idStr := os.Args[2:3]
 			id, _ = strconv.Atoi(idStr[0])
@@ -85,7 +79,7 @@ func main() {
 
 		books, err := crud.SelectData(id)
 		if err != nil {
-			log.Fatal("SelectData:", err)
+			return err
 		}
 
 		for _, book := range books {
@@ -96,7 +90,7 @@ func main() {
 		var id int
 
 		if argLen < 4 {
-			log.Println("Need more params")
+			return errors.New(command[0] + ": Need more params")
 		} else {
 			id, _ = strconv.Atoi(os.Args[2:3][0])
 
@@ -108,7 +102,7 @@ func main() {
 
 			count, err := crud.UpdateData(book)
 			if err != nil {
-				log.Fatal("UpdateData:", err)
+				return err
 			}
 
 			log.Println("Update count:", count)
@@ -118,7 +112,7 @@ func main() {
 		var id int
 
 		if argLen < 1 {
-			log.Fatal("Need more params")
+			return errors.New(command[0] + ": Need more params")
 		} else if argLen == 2 {
 			idStr := os.Args[2:3]
 			id, _ = strconv.Atoi(idStr[0])
@@ -128,12 +122,30 @@ func main() {
 
 		count, err := crud.DeleteData(id)
 		if err != nil {
-			log.Fatal("DeleteData:", err)
+			return err
 		}
 
 		log.Println("Delete count:", count)
 
 	default:
-		log.Println("check inputed parameters")
+		return errors.New("check inputed parameters")
+	}
+
+	return nil
+}
+
+func init() {
+	db.Info = config.DatabaseInfoSQLite
+	// db.Info = config.DatabaseInfoMySQL
+	// db.Info = config.DatabaseInfoPgPublic
+	// db.Info = config.DatabaseInfoPgSchema
+	// db.Info = config.DatabaseInfoPgOtherDatabase
+}
+
+func main() {
+	err := doJob()
+
+	if err != nil {
+		log.Fatal(err)
 	}
 }

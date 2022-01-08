@@ -79,7 +79,7 @@ func SetupDB() error {
 		}
 
 	default:
-		return errors.New("nothing to support DB")
+		return errors.New("database type not supported")
 	}
 
 	return nil
