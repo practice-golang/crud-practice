@@ -17,7 +17,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func doJob() error {
+func beginJob() error {
 	var err error
 
 	// 실행파일(#1) 명령(#2) 대상(#3...)
@@ -143,7 +143,7 @@ func init() {
 }
 
 func main() {
-	err := doJob()
+	err := beginJob()
 
 	if err != nil {
 		log.Fatal(err)
