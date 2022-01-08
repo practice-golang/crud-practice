@@ -4,6 +4,7 @@ import (
 	"crud-practice/config"
 	"crud-practice/db"
 	"os"
+	"strings"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,24 +19,54 @@ func Test_main(t *testing.T) {
 		args []string
 	}{
 		{
-			name: "SQLITE",
+			name: "EMPTY ARGS",
+			db:   config.DatabaseInfoSQLite,
+			args: []string{"program"},
+		},
+		{
+			name: "WRONG ARGS",
+			db:   config.DatabaseInfoSQLite,
+			args: []string{"program", "wrong", "params"},
+		},
+		{
+			name: "INSERT",
 			db:   config.DatabaseInfoSQLite,
 			args: []string{"program", "insert", "book_name", "author_name"},
 		},
 		{
-			name: "SQLITE",
+			name: "SELECT ALL",
 			db:   config.DatabaseInfoSQLite,
 			args: []string{"program", "select"},
 		},
 		{
-			name: "SQLITE",
+			name: "SELECT 1",
+			db:   config.DatabaseInfoSQLite,
+			args: []string{"program", "select", "1"},
+		},
+		{
+			name: "SELECT 0(=ALL)",
+			db:   config.DatabaseInfoSQLite,
+			args: []string{"program", "select", "wtf", "wtf"},
+		},
+		{
+			name: "UPDATE",
 			db:   config.DatabaseInfoSQLite,
 			args: []string{"program", "update", "1", "book_name", "author_name"},
 		},
 		{
-			name: "SQLITE",
+			name: "UPDATE NO ARGS",
+			db:   config.DatabaseInfoSQLite,
+			args: []string{"program", "update"},
+		},
+		{
+			name: "DELETE",
 			db:   config.DatabaseInfoSQLite,
 			args: []string{"program", "delete", "1"},
+		},
+		{
+			name: "DELETE 0(=NONE)",
+			db:   config.DatabaseInfoSQLite,
+			args: []string{"program", "delete", "wtf", "wtf"},
 		},
 	}
 	for _, tt := range tests {
@@ -43,9 +74,32 @@ func Test_main(t *testing.T) {
 			os.Args = tt.args
 
 			err := beginJob()
+
+			if tt.name == "EMPTY ARGS" {
+				if strings.Contains(err.Error(), "no args") {
+					return
+				}
+			}
+			if tt.name == "WRONG ARGS" {
+				if strings.Contains(err.Error(), "check inputed parameters") {
+					return
+				}
+			}
+
 			defer os.Remove(db.Info.FilePath)
 			defer db.Con.Close()
+
 			if err != nil {
+				if tt.name == "DELETE 0(=NONE)" {
+					if strings.Contains(err.Error(), "idx value have to exist and to be larger than 0") {
+						return
+					}
+				}
+				if tt.name == "UPDATE NO ARGS" {
+					if strings.Contains(err.Error(), "need more params") {
+						return
+					}
+				}
 				t.Error(err)
 			}
 		})

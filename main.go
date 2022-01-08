@@ -28,7 +28,7 @@ func beginJob() error {
 		fmt.Println("appmain.exe select [id_number]")
 		fmt.Println("appmain.exe update id_number book_name author_name")
 		fmt.Println("appmain.exe delete id_number")
-		os.Exit(1)
+		return errors.New("no args")
 	}
 
 	command := os.Args[1:2]
@@ -52,7 +52,7 @@ func beginJob() error {
 	switch command[0] {
 	case "insert":
 		if argLen < 3 {
-			return errors.New(command[0] + ": Need more params")
+			return errors.New(command[0] + ": need more params")
 		}
 
 		book := model.Book{
@@ -70,9 +70,7 @@ func beginJob() error {
 	case "select":
 		var id int = 0
 
-		if argLen < 1 {
-			return errors.New(command[0] + ": Need more params")
-		} else if argLen == 2 {
+		if argLen == 2 {
 			idStr := os.Args[2:3]
 			id, _ = strconv.Atoi(idStr[0])
 		}
@@ -90,7 +88,7 @@ func beginJob() error {
 		var id int
 
 		if argLen < 4 {
-			return errors.New(command[0] + ": Need more params")
+			return errors.New(command[0] + ": need more params")
 		} else {
 			id, _ = strconv.Atoi(os.Args[2:3][0])
 
@@ -111,9 +109,7 @@ func beginJob() error {
 	case "delete":
 		var id int
 
-		if argLen < 1 {
-			return errors.New(command[0] + ": Need more params")
-		} else if argLen == 2 {
+		if argLen == 2 {
 			idStr := os.Args[2:3]
 			id, _ = strconv.Atoi(idStr[0])
 		} else {
