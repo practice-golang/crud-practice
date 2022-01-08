@@ -41,7 +41,10 @@ func Test_main(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			os.Args = tt.args
+
 			err := beginJob()
+			defer os.Remove(db.Info.FilePath)
+			defer db.Con.Close()
 			if err != nil {
 				t.Error(err)
 			}
