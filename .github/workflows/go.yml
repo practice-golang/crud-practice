@@ -21,7 +21,7 @@ jobs:
         
       sqlserver:
 #         image: mcr.microsoft.com/mssql/server:2019-latest
-        image: mcr.microsoft.com/mssql/server:2019-CU14-ubuntu-20.04
+        image: mcr.microsoft.com/mssql/server:2017-latest
         env:
           MSSQL_IP_ADDRESS: 0.0.0.0
           MSSQL_SA_PASSWORD: 'mssql'
