@@ -40,6 +40,7 @@ jobs:
       with:
         accept eula: Y
         sa password: "SqlSever1231234"
+        SA_PASSWORD: "mssql"
 
     - name: Verify MySQL connection
       run: |
@@ -48,7 +49,7 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
-        sqlcmd -S tcp:127.0.0.1,1433 -U SA -P "SqlSever123123"
+        sqlcmd -S tcp:127.0.0.1,1433 -U SA -P "SqlSever1231234"
 
     - uses: actions/checkout@v2
     
