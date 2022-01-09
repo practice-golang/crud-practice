@@ -22,7 +22,7 @@ jobs:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2019-latest
         env:
-          MSSQL_SA_PASSWORD: 'mssql'
+          MSSQL_SA_PASSWORD: 'mssql!#$%'
           ACCEPT_EULA: Y
         ports:
           - 1401:1433
@@ -41,8 +41,8 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
-        sleep 10
-        sqlcmd -S tcp:127.0.0.1,1401 -U SA -P "mssql"
+        sleep 25
+        sqlcmd -S tcp:127.0.0.1,1401 -U SA -P "mssql!@#$%"
 
     - uses: actions/checkout@v2
     
