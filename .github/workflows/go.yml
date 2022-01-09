@@ -49,7 +49,7 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
-        sqlcmd -S tcp:127.0.0.1,1433 -U SA -P "SqlSever1231234"
+        sqlcmd -S tcp:127.0.0.1,1433 -U SA -P "mssql"
 
     - uses: actions/checkout@v2
     
