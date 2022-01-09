@@ -20,7 +20,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-gdr
+        image: mcr.microsoft.com/mssql/server:2019-latest
         env:
           SA_PASSWORD: 'mssql'
           ACCEPT_EULA: Y
@@ -41,6 +41,7 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
+        sleep 10
         sqlcmd -S tcp:127.0.0.1,1401 -U SA -P "mssql"
 
     - uses: actions/checkout@v2
