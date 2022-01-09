@@ -20,7 +20,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
+        image: mcr.microsoft.com/mssql/server:2017-gdr
         env:
           SA_PASSWORD: 'mssql'
           ACCEPT_EULA: Y
