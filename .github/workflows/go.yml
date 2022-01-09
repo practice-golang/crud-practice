@@ -39,7 +39,7 @@ jobs:
       with:
         accept eula: Y
         sa password: mssql
-        
+        port: 1433
     - name: Verify MySQL connection from host
       run: |
         sudo apt-get install -y mariadb-client
