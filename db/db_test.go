@@ -54,7 +54,7 @@ func TestSetupDB(t *testing.T) {
 				DatabaseType:  SQLSERVER,
 				Protocol:      "tcp",
 				Addr:          "localhost",
-				Port:          "1433",
+				Port:          "1401",
 				DatabaseName:  "mysitedb",
 				SchemaName:    "dbo",
 				TableName:     "books",

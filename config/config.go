@@ -62,7 +62,7 @@ var DatabaseInfoSqlServer = db.DBInfo{
 	DatabaseType:  db.SQLSERVER,
 	Protocol:      "tcp",
 	Addr:          "localhost",
-	Port:          "1433",
+	Port:          "1401",
 	DatabaseName:  "mysitedb",
 	SchemaName:    "dbo",
 	TableName:     "books",
