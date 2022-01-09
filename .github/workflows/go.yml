@@ -39,7 +39,7 @@ jobs:
       uses: 280780363/sqlserver-action@v1.0
       with:
         accept eula: Y
-        sa password: mssql
+        sa password: "mssql"
 
     - name: Verify MySQL connection
       run: |
