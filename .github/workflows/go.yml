@@ -18,8 +18,17 @@ jobs:
         container port: 3306
         mysql version: '5.7'
         mysql database: books
+        mysql root password: ''
         mysql user: 'root'
         mysql password: 'root'
+        
+    - name: Setup PostgreSQL
+      uses: Harmon758/postgresql-action@v1.0.0
+      with:
+        host port: 5432
+        container port: 5432
+        postgresql user: 'root'
+        postgresql password: 'pgsql'
 
     - uses: actions/checkout@v2
     
