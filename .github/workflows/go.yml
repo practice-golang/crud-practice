@@ -46,7 +46,8 @@ jobs:
       run: |
         sudo add-apt-repository -y "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
         sudo apt-get install -y mssql-server
-        sqlcmd -S 127.0.0.1,job.services.sqlserver.ports['1433'] -U SA -P 'mssql'
+        sudo /opt/mssql/bin/mssql-conf setup -y
+        sqlcmd -S 127.0.0.1,1401 -U SA -P 'mssql'
 
     - uses: actions/checkout@v2
     
