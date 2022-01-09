@@ -23,7 +23,7 @@ jobs:
     - name: Verify MySQL connection from host
       run: |
         sudo apt-get install -y mariadb-client
-        mariadb --host 127.0.0.1 --port ${{ job.services.mysql.ports['13306'] }} -uroot -e "SHOW DATABASES"
+        mariadb --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -e "SHOW DATABASES"
 
     - name: Setup PostgreSQL
       uses: Harmon758/postgresql-action@v1.0.0
