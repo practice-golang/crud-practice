@@ -11,8 +11,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Setup MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        host port: 7777
+        container port: 13306
+        mysql version: '5.7'
+        mysql database: books
+        mysql user: 'root'
+        mysql password: ''
 
+    - uses: actions/checkout@v2
+    
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
