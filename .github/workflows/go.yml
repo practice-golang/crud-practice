@@ -19,13 +19,13 @@ jobs:
           - 13306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        env:
-          MSSQL_SA_PASSWORD: mssql
-          ACCEPT_EULA: Y
-        ports:
-          - 11433:1433
+#       sqlserver:
+#         image: mcr.microsoft.com/mssql/server:2019-latest
+#         env:
+#           MSSQL_SA_PASSWORD: mssql
+#           ACCEPT_EULA: Y
+#         ports:
+#           - 11433:1433
 
     steps:
     - name: Setup PostgreSQL
@@ -33,6 +33,12 @@ jobs:
       with:
         postgresql user: 'root'
         postgresql password: 'pgsql'
+    
+    - name: Setup SqlServer
+      uses: 280780363/sqlserver-action@v1.0
+      with:
+        accept eula: Y
+        sa password: mssql
         
     - name: Verify MySQL connection from host
       run: |
