@@ -51,7 +51,8 @@ func SelectData(id int) ([]model.Book, error) {
 
 	where := []interface{}{}
 	if id > 0 {
-		sql += ` WHERE IDX=?`
+		substitute, _, _ := np.CreateAssignHolders(dbtype, db.QuotesName("IDX"), 0)
+		sql += ` WHERE ` + substitute
 		where = append(where, id)
 	}
 
@@ -73,8 +74,8 @@ func UpdateData(book model.Book) (int64, error) {
 	tablename := db.GetTableName()
 
 	columns := np.CreateString(book, dbtype, "").Names
-	directive, offset, _ := np.CreateUpdateHolders(dbtype, columns, 0)
-	where, _, _ := np.CreateUpdateHolders(dbtype, db.QuotesName("IDX"), offset)
+	directive, offset, _ := np.CreateAssignHolders(dbtype, columns, 0)
+	where, _, _ := np.CreateAssignHolders(dbtype, db.QuotesName("IDX"), offset)
 
 	sql := `UPDATE ` + tablename + ` SET ` + directive + ` WHERE ` + where
 
@@ -95,10 +96,12 @@ func UpdateData(book model.Book) (int64, error) {
 func DeleteData(id int) (int64, error) {
 	var count int64 = 0
 
+	dbtype := db.GetDatabaseTypeString()
 	tablename := db.GetTableName()
 
 	if id > 0 {
-		sql := `DELETE FROM ` + tablename + ` WHERE ` + db.QuotesName("IDX") + `=?`
+		where, _, _ := np.CreateAssignHolders(dbtype, db.QuotesName("IDX"), 0)
+		sql := `DELETE FROM ` + tablename + ` WHERE ` + where
 		whereValues := []interface{}{id}
 
 		r, err := db.Con.Exec(sql, whereValues...)

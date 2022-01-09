@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 
+	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	"gopkg.in/guregu/null.v4"
@@ -77,7 +78,7 @@ func beginJob() error {
 
 		books, err := crud.SelectData(id)
 		if err != nil {
-			return err
+			return errors.New("SelectData " + err.Error())
 		}
 
 		for _, book := range books {
@@ -136,6 +137,7 @@ func init() {
 	// db.Info = config.DatabaseInfoPgPublic
 	// db.Info = config.DatabaseInfoPgSchema
 	// db.Info = config.DatabaseInfoPgOtherDatabase
+	// db.Info = config.DatabaseInfoSqlServer
 }
 
 func main() {

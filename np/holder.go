@@ -26,6 +26,14 @@ func CreateHolders(dbtype, colNames string) (string, error) {
 				holders += ","
 			}
 		}
+	case "sqlserver":
+		for i := 0; i < count; i++ {
+			// holders += "'%s'"
+			holders += "@p" + fmt.Sprint(i+1)
+			if i < count-1 {
+				holders += ","
+			}
+		}
 	default:
 		for i := 0; i < count; i++ {
 			holders += "?"
@@ -38,10 +46,10 @@ func CreateHolders(dbtype, colNames string) (string, error) {
 	return holders, err
 }
 
-// CreateUpdateHolders
+// CreateAssignHolders
 // Create preparing holder string for update
 // like FIELDA=?, FIELDB=? or FIELDA=$1, FIELDB=$2.. from column names
-func CreateUpdateHolders(dbtype string, columnNames interface{}, offset int) (string, int, error) {
+func CreateAssignHolders(dbtype string, columnNames interface{}, offset int) (string, int, error) {
 	var err error
 	var holders string
 
@@ -76,9 +84,15 @@ func CreateUpdateHolders(dbtype string, columnNames interface{}, offset int) (st
 
 	for i := 0; i < count; i++ {
 		holder := "?"
-		if dbtype == "postgres" {
+
+		switch dbtype {
+		case "postgres":
 			holder = "$" + fmt.Sprint(i+1+offset)
+		case "sqlserver":
+			// holder = "'%s'"
+			holder = "@p" + fmt.Sprint(i+1+offset)
 		}
+
 		holders += colNames[i] + "=" + holder
 		if i < count-1 {
 			holders += ","

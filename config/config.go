@@ -57,3 +57,15 @@ var DatabaseInfoPgOtherDatabase = db.DBInfo{
 	GrantID:       "root",
 	GrantPassword: "pgsql",
 }
+
+var DatabaseInfoSqlServer = db.DBInfo{
+	DatabaseType:  db.SQLSERVER,
+	Protocol:      "tcp",
+	Addr:          "localhost",
+	Port:          "1433",
+	DatabaseName:  "mysitedb",
+	SchemaName:    "dbo",
+	TableName:     "books",
+	GrantID:       "sa",
+	GrantPassword: "mssql",
+}

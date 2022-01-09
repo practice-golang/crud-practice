@@ -11,6 +11,8 @@ func GetTableName() string {
 		tablename = Info.DatabaseName + `.` + Info.TableName
 	case POSTGRES:
 		tablename = `"` + Info.SchemaName + `"."` + Info.TableName + `"`
+	case SQLSERVER:
+		tablename = `"` + Info.DatabaseName + `"."` + Info.SchemaName + `"."` + Info.TableName + `"`
 	}
 
 	return tablename
@@ -26,6 +28,8 @@ func GetDatabaseTypeString() string {
 		dbtype = "mysql"
 	case POSTGRES:
 		dbtype = "postgres"
+	case SQLSERVER:
+		dbtype = "sqlserver"
 	}
 
 	return dbtype
@@ -44,6 +48,9 @@ func QuotesName(data string) string {
 	case POSTGRES:
 		data = strings.ReplaceAll(data, `"`, `""`)
 		result = `"` + data + `"`
+	case SQLSERVER:
+		data = strings.ReplaceAll(data, `"`, `""`)
+		result = `"` + data + `"`
 	}
 
 	return result
@@ -60,6 +67,9 @@ func QuotesValue(data string) string {
 		data = strings.ReplaceAll(data, "'", "\\'")
 		result = "'" + data + "'"
 	case POSTGRES:
+		data = strings.ReplaceAll(data, "'", "''")
+		result = "'" + data + "'"
+	case SQLSERVER:
 		data = strings.ReplaceAll(data, "'", "''")
 		result = "'" + data + "'"
 	}

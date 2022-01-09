@@ -81,7 +81,9 @@ func (d *Postgres) Exec(sql string, colValues []interface{}, options string) (in
 		return count, idx, err
 	}
 
-	count = 1
+	if idx > 0 {
+		count = 1
+	}
 
 	return count, idx, nil
 }

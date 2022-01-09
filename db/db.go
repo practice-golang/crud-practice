@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	_        = iota
-	SQLITE   // SQLite
-	MYSQL    // MySQL
-	POSTGRES // PostgreSQL
-	MOCKDB   // mockdb
+	_         = iota
+	SQLITE    // SQLite
+	MYSQL     // MySQL
+	POSTGRES  // PostgreSQL
+	SQLSERVER // MS SQL Server
 )
 
 type (
@@ -32,7 +32,7 @@ type (
 		CreateDB() error
 		CreateTable() error
 		// Exec - Almost Same as sql.Exec()
-		// Because of PostgreSQL, INSERT query and RETURN id way is not enough to use sql.Exec()
+		// Because of PostgreSQL and MS SQL Server, INSERT query and RETURN id way is not enough to use sql.Exec()
 		// Return affected rows, last insert id, error
 		// Not return sql.Result
 		Exec(string, []interface{}, string) (int64, int64, error)
@@ -72,6 +72,15 @@ func SetupDB() error {
 	case POSTGRES:
 		dsn := `host=` + Info.Addr + ` port=` + Info.Port + ` user=` + Info.GrantID + ` password=` + Info.GrantPassword + ` dbname=` + Info.DatabaseName + ` sslmode=disable`
 		Obj = &Postgres{dsn: dsn}
+
+		Con, err = Obj.connect()
+		if err != nil {
+			return err
+		}
+
+	case SQLSERVER:
+		dsn := Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Protocol + "(" + Info.Addr + ":" + Info.Port + ")/" + Info.DatabaseName
+		Obj = &SqlServer{dsn: dsn}
 
 		Con, err = Obj.connect()
 		if err != nil {

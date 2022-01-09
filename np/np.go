@@ -107,6 +107,10 @@ func CreateString(o interface{}, dbtype, skipValue string) ColumnStrings {
 		quote = `"`
 		separatorNames = `","`
 		separatorValues = `','`
+	case "sqlserver":
+		quote = `"`
+		separatorNames = `","`
+		separatorValues = `','`
 	}
 
 	result := createString(o, dbtype, skipValue, separatorNames, separatorValues)

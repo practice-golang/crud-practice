@@ -49,6 +49,20 @@ func TestSetupDB(t *testing.T) {
 			},
 		},
 		{
+			name: "SQLSERVER",
+			info: DBInfo{
+				DatabaseType:  SQLSERVER,
+				Protocol:      "tcp",
+				Addr:          "localhost",
+				Port:          "1433",
+				DatabaseName:  "mysitedb",
+				SchemaName:    "dbo",
+				TableName:     "books",
+				GrantID:       "sa",
+				GrantPassword: "mssql",
+			},
+		},
+		{
 			name: "NOTHING",
 			info: DBInfo{
 				DatabaseType: 999,
