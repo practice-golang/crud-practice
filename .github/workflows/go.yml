@@ -38,6 +38,7 @@ jobs:
     - name: Setup SQL Server
       uses: potatoqualitee/mssqlsuite@v1
       with:
+        install: sqlclient,sqlpackage,sqlengine,localdb
         sa-password: mssql
         show-log: true
 
