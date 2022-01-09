@@ -31,8 +31,6 @@ jobs:
     - name: Setup PostgreSQL
       uses: Harmon758/postgresql-action@v1.0.0
       with:
-        host port: 5432
-        container port: 5432
         postgresql user: 'root'
         postgresql password: 'pgsql'
         
