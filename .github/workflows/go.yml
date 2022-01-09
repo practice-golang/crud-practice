@@ -20,6 +20,8 @@ jobs:
         mysql database: books
         mysql root user: 'root'
         mysql root password: ''
+        mysql user: 'root'
+        mysql password: ''
 
     - uses: actions/checkout@v2
     
