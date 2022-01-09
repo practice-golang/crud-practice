@@ -25,7 +25,7 @@ jobs:
           SA_PASSWORD: mssql
           ACCEPT_EULA: Y
         ports:
-          - "1433"
+          - 1433
 
     steps:
     - name: Setup PostgreSQL
