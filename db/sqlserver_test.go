@@ -13,12 +13,12 @@ func TestSqlServer_Exec(t *testing.T) {
 		DatabaseType:  SQLSERVER,
 		Protocol:      "tcp",
 		Addr:          "localhost",
-		Port:          "1401",
+		Port:          "1433",
 		DatabaseName:  "mysitedb",
 		SchemaName:    "dbo",
 		TableName:     "books",
 		GrantID:       "sa",
-		GrantPassword: "mssql",
+		GrantPassword: "SQLServer1433",
 	}
 
 	type args struct {

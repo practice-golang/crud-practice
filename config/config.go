@@ -62,10 +62,10 @@ var DatabaseInfoSqlServer = db.DBInfo{
 	DatabaseType:  db.SQLSERVER,
 	Protocol:      "tcp",
 	Addr:          "localhost",
-	Port:          "1401",
+	Port:          "1433",
 	DatabaseName:  "mysitedb",
 	SchemaName:    "dbo",
 	TableName:     "books",
 	GrantID:       "sa",
-	GrantPassword: "mssql",
+	GrantPassword: "SQLServer1433",
 }
