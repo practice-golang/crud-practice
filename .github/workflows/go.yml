@@ -24,7 +24,7 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2017-latest
         env:
           MSSQL_IP_ADDRESS: 0.0.0.0
-          MSSQL_SA_PASSWORD: 'mssql1433'
+          SA_PASSWORD: 'mssql1433'
           ACCEPT_EULA: Y
         ports:
           - 1433:1433
