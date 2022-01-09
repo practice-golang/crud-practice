@@ -12,7 +12,7 @@ func TestMysql_Exec(t *testing.T) {
 	Info = DBInfo{
 		DatabaseType:  MYSQL,
 		Protocol:      "tcp",
-		Addr:          "localhost",
+		Addr:          "127.0.0.1",
 		Port:          "13306",
 		DatabaseName:  "myslimsite",
 		SchemaName:    "",
