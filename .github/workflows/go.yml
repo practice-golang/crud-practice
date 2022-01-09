@@ -19,13 +19,14 @@ jobs:
           - 13306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        env:
-          MSSQL_SA_PASSWORD: 'mssql!#$%'
-          ACCEPT_EULA: Y
-        ports:
-          - 1401:1433
+#       sqlserver:
+#         image: mcr.microsoft.com/mssql/server:2019-latest
+#         env:
+#           MSSQL_IP_ADDRESS: 0.0.0.0
+#           MSSQL_SA_PASSWORD: 'mssql'
+#           ACCEPT_EULA: Y
+#         ports:
+#           - 1401:1433
 
     steps:
     - name: Setup PostgreSQL
@@ -33,6 +34,12 @@ jobs:
       with:
         postgresql user: 'root'
         postgresql password: 'pgsql'
+        
+    - name: Setup SQL Server
+      uses: potatoqualitee/mssqlsuite@v1
+      with:
+        sa-password: mssql
+        show-log: true
 
     - name: Verify MySQL connection
       run: |
@@ -41,8 +48,7 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
-        sleep 25
-        sqlcmd -S tcp:127.0.0.1,1401 -U SA -P "mssql!@#$%"
+        sqlcmd -S tcp:127.0.0.1,1401 -U SA -P "mssql"
 
     - uses: actions/checkout@v2
     
