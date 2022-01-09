@@ -9,14 +9,11 @@ type SqlServer struct{ dsn string }
 func (d *SqlServer) CreateDB() error {
 	sql := `
 	USE master
-	-- GO
 	IF NOT EXISTS(
 		SELECT name
 		FROM sys.databases
 		WHERE name=N'` + Info.DatabaseName + `'
-	)
-	CREATE DATABASE [` + Info.DatabaseName + `]
-	-- GO
+	) CREATE DATABASE [` + Info.DatabaseName + `]
 	`
 	_, err := Con.Exec(sql)
 	if err != nil {
