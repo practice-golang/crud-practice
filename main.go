@@ -132,12 +132,12 @@ func beginJob() error {
 }
 
 func init() {
-	// db.Info = config.DatabaseInfoSQLite
+	db.Info = config.DatabaseInfoSQLite
 	// db.Info = config.DatabaseInfoMySQL
 	// db.Info = config.DatabaseInfoPgPublic
 	// db.Info = config.DatabaseInfoPgSchema
 	// db.Info = config.DatabaseInfoPgOtherDatabase
-	db.Info = config.DatabaseInfoSqlServer
+	// db.Info = config.DatabaseInfoSqlServer
 }
 
 func main() {

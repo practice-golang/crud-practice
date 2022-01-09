@@ -31,8 +31,7 @@ func (d *SqlServer) CreateTable() error {
 		IDX INT NOT NULL IDENTITY PRIMARY KEY,
 		TITLE VARCHAR(256) NULL,
 		AUTHOR VARCHAR(256) NULL,
-	)
-	-- GO`
+	)`
 
 	_, err := Con.Exec(sql)
 	if err != nil {
