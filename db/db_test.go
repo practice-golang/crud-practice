@@ -54,7 +54,7 @@ func TestSetupDB(t *testing.T) {
 				DatabaseType:  SQLSERVER,
 				Protocol:      "tcp",
 				Addr:          "localhost",
-				Port:          "1433",
+				Port:          "11433",
 				DatabaseName:  "mysitedb",
 				SchemaName:    "dbo",
 				TableName:     "books",
@@ -80,6 +80,7 @@ func TestSetupDB(t *testing.T) {
 				}
 				t.Error(err)
 			}
+
 			if err != nil {
 				t.Fatal(err)
 			}

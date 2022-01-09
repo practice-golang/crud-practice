@@ -13,7 +13,7 @@ func TestSqlServer_Exec(t *testing.T) {
 		DatabaseType:  SQLSERVER,
 		Protocol:      "tcp",
 		Addr:          "localhost",
-		Port:          "1433",
+		Port:          "11433",
 		DatabaseName:  "mysitedb",
 		SchemaName:    "dbo",
 		TableName:     "books",
@@ -40,7 +40,7 @@ func TestSqlServer_Exec(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dsn := Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Protocol + "(" + Info.Addr + ":" + Info.Port + ")/" + Info.DatabaseName
+			dsn := "sqlserver://" + Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Addr + ":" + Info.Port + "?" + Info.DatabaseName + "&connction+timeout=30"
 			Obj = &SqlServer{dsn: dsn}
 			Con, err = Obj.connect()
 			if err != nil {
