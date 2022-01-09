@@ -36,11 +36,10 @@ jobs:
         postgresql password: 'pgsql'
         
     - name: Setup SQL Server
-      uses: potatoqualitee/mssqlsuite@v1
+      uses: 280780363/sqlserver-action@v1.0
       with:
-        install: sqlclient,sqlpackage,sqlengine,localdb
-        sa-password: mssql
-        show-log: true
+        accept eula: Y
+        
 
     - name: Verify MySQL connection
       run: |
@@ -49,7 +48,7 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
-        sqlcmd -S tcp:127.0.0.1,1401 -U SA -P "mssql"
+        sqlcmd -S tcp:127.0.0.1,1433 -U SA -P "SqlSever123123"
 
     - uses: actions/checkout@v2
     
