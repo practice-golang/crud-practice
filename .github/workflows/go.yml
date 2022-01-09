@@ -34,12 +34,6 @@ jobs:
       with:
         postgresql user: 'root'
         postgresql password: 'pgsql'
-        
-#     - name: Setup SQL Server
-#       uses: 280780363/sqlserver-action@v1.0
-#       with:
-#         accept eula: Y
-#         sa password: "SqlSever123123"
 
     - name: Verify MySQL connection
       run: |
