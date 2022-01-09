@@ -28,7 +28,7 @@ jobs:
           INPUT_ACCEPT_EULA: Y
           ACCEPT_EULA: Y
         ports:
-          - 1433:1433
+          - 1401:1433
 
     steps:
     - name: Setup PostgreSQL
@@ -36,7 +36,7 @@ jobs:
       with:
         postgresql user: 'root'
         postgresql password: 'pgsql'
-    
+
     - name: Verify MySQL connection from host
       run: |
         sudo apt-get install -y mariadb-client
