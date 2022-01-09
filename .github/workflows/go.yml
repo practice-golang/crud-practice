@@ -44,7 +44,7 @@ jobs:
         
     - name: Verify SQL Server connection
       run: |
-        sqlcmd -S tcp:127.0.0.1,1401 -U sa -P 'mssql'
+        sqlcmd -S tcp:sqlserver,1401 -U sa -P 'mssql'
 
     - uses: actions/checkout@v2
     
