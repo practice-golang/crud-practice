@@ -2,6 +2,7 @@ build:
 	go build -ldflags "-w -s" -trimpath -o bin/
 
 dist:
+	go env -w GOFLAGS=-trimpath
 	go get -d github.com/mitchellh/gox
 	go build -mod=readonly -o ./bin/ github.com/mitchellh/gox
 	go mod tidy
