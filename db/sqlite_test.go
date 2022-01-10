@@ -3,6 +3,7 @@ package db
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 	_ "modernc.org/sqlite"
@@ -53,6 +54,8 @@ func TestSQLite_Exec(t *testing.T) {
 			defer os.Remove(tt.dsn)
 			defer Con.Close()
 
+			time.Sleep(time.Millisecond * 250)
+
 			err = tt.d.CreateTable()
 			if err != nil {
 				os.Remove(tt.dsn)
@@ -60,8 +63,11 @@ func TestSQLite_Exec(t *testing.T) {
 				return
 			}
 
+			time.Sleep(time.Millisecond * 10)
+
 			count, _, err := tt.d.Exec(tt.args.sql, tt.args.colValues, tt.args.options)
 			if err != nil {
+				os.Remove(tt.dsn)
 				t.Error(err)
 				return
 			}
