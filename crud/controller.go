@@ -73,7 +73,7 @@ func UpdateData(book model.Book) (int64, error) {
 	dbtype := db.GetDatabaseTypeString()
 	tablename := db.GetTableName()
 
-	columns := np.CreateString(book, dbtype, "").Names
+	columns := np.CreateString(book, dbtype, "update").Names
 	directive, offset, _ := np.CreateAssignHolders(dbtype, columns, 0)
 	where, _, _ := np.CreateAssignHolders(dbtype, db.QuotesName("IDX"), offset)
 
