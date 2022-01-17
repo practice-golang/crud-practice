@@ -48,7 +48,7 @@ func beginJob() error {
 	if err != nil {
 		log.Fatal("CreateTable:", err)
 	}
-	defer db.Con.Close()
+	// defer db.Con.Close()
 
 	switch command[0] {
 	case "insert":
