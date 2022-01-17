@@ -30,7 +30,7 @@ func createString(o interface{}, dbtype, skipValue, separatorNames, separatorVal
 	case reflect.Struct:
 		for i := 0; i < ov.NumField(); i++ {
 			skipTag := ov.Type().Field(i).Tag.Get(TagNameNPSKIP)
-			if skipTag != "" && strings.Contains(skipTag, skipValue) {
+			if skipTag != "" && skipValue != "" && strings.Contains(skipTag, skipValue) {
 				continue
 			}
 
@@ -58,6 +58,13 @@ func createString(o interface{}, dbtype, skipValue, separatorNames, separatorVal
 			case ov.Field(i).Kind() == reflect.Ptr:
 				// Maybe pointer
 				if !ov.Field(i).IsNil() {
+					names += ov.Type().Field(i).Tag.Get(TagName)
+					values += fmt.Sprint(ov.Field(i).Elem())
+				}
+
+			case ov.Field(i).Kind() == reflect.Interface:
+				// Maybe interface
+				if ov.Type().Field(i).Tag.Get(TagName) != "" {
 					names += ov.Type().Field(i).Tag.Get(TagName)
 					values += fmt.Sprint(ov.Field(i).Elem())
 				}
@@ -103,6 +110,10 @@ func CreateString(o interface{}, dbtype, skipValue string) ColumnStrings {
 	separatorNames := Separator
 	separatorValues := Separator
 	switch dbtype {
+	case "mysql":
+		quote = "`"
+		separatorNames = "`,`"
+		separatorValues = `','`
 	case "postgres":
 		quote = `"`
 		separatorNames = `","`
@@ -159,8 +170,8 @@ func CreateMapSlice(o interface{}, skipValue string) map[string][]interface{} {
 					values = append(values, valueStruct["values"]...)
 				}
 
-			case ov.Field(i).Kind() == reflect.Ptr:
-				// Maybe pointer
+			case ov.Field(i).Kind() == reflect.Ptr, ov.Field(i).Kind() == reflect.Interface:
+				// Maybe pointer, interface
 				if !ov.Field(i).IsNil() {
 					names = append(names, ov.Type().Field(i).Tag.Get(TagName))
 					values = append(values, fmt.Sprint(ov.Field(i).Elem()))
@@ -229,8 +240,8 @@ func CreateMap(o interface{}, skipValue string) map[string]string {
 					}
 				}
 
-			case ov.Field(i).Kind() == reflect.Ptr:
-				// Maybe pointer
+			case ov.Field(i).Kind() == reflect.Ptr, ov.Field(i).Kind() == reflect.Interface:
+				// Maybe pointer, interface
 				if !ov.Field(i).IsNil() {
 					name = ov.Type().Field(i).Tag.Get(TagName)
 					value = fmt.Sprint(ov.Field(i).Elem())
