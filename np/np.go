@@ -170,9 +170,16 @@ func CreateMapSlice(o interface{}, skipValue string) map[string][]interface{} {
 					values = append(values, valueStruct["values"]...)
 				}
 
-			case ov.Field(i).Kind() == reflect.Ptr, ov.Field(i).Kind() == reflect.Interface:
-				// Maybe pointer, interface
+			case ov.Field(i).Kind() == reflect.Ptr:
+				// Maybe pointer
 				if !ov.Field(i).IsNil() {
+					names = append(names, ov.Type().Field(i).Tag.Get(TagName))
+					values = append(values, fmt.Sprint(ov.Field(i).Elem()))
+				}
+
+			case ov.Field(i).Kind() == reflect.Interface:
+				// Maybe interface
+				if ov.Type().Field(i).Tag.Get(TagName) != "" {
 					names = append(names, ov.Type().Field(i).Tag.Get(TagName))
 					values = append(values, fmt.Sprint(ov.Field(i).Elem()))
 				}
@@ -240,9 +247,18 @@ func CreateMap(o interface{}, skipValue string) map[string]string {
 					}
 				}
 
-			case ov.Field(i).Kind() == reflect.Ptr, ov.Field(i).Kind() == reflect.Interface:
-				// Maybe pointer, interface
+			case ov.Field(i).Kind() == reflect.Ptr:
+				// Maybe pointer
 				if !ov.Field(i).IsNil() {
+					name = ov.Type().Field(i).Tag.Get(TagName)
+					value = fmt.Sprint(ov.Field(i).Elem())
+
+					pairs[name] = value
+				}
+
+			case ov.Field(i).Kind() == reflect.Interface:
+				// Maybe interface
+				if ov.Type().Field(i).Tag.Get(TagName) != "" {
 					name = ov.Type().Field(i).Tag.Get(TagName)
 					value = fmt.Sprint(ov.Field(i).Elem())
 
