@@ -93,7 +93,7 @@ var DatabaseInfoOracle = db.DBInfo{
 	Protocol:      "tcp",
 	Addr:          "localhost",
 	Port:          "1521",
-	DatabaseName:  "myaccount",
+	DatabaseName:  "XE",
 	SchemaName:    "",
 	TableName:     "books",
 	GrantID:       "myaccount",

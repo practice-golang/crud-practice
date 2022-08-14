@@ -142,10 +142,10 @@ func init() {
 	// db.Info = config.DatabaseInfoPgOtherDatabase
 	// db.Info = config.DatabaseInfoSqlServer
 
-	// db.Info = config.DatabaseInfoOracle
-	// db.InfoOracleAdmin = config.DatabaseInfoOracleSystem
-	db.Info = config.DatabaseInfoOracleCloud
-	db.InfoOracleAdmin = config.DatabaseInfoOracleCloudAdmin
+	db.Info = config.DatabaseInfoOracle
+	db.InfoOracleAdmin = config.DatabaseInfoOracleSystem
+	// db.Info = config.DatabaseInfoOracleCloud
+	// db.InfoOracleAdmin = config.DatabaseInfoOracleCloudAdmin
 }
 
 func main() {

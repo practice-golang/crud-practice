@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -18,9 +17,13 @@ type Oracle struct {
 func (d *Oracle) createAccount() {
 	var err error
 
+	tableSpace := "USERS"
 	port, _ := strconv.Atoi(InfoOracleAdmin.Port)
 	dsn := go_ora.BuildUrl(InfoOracleAdmin.Addr, port, InfoOracleAdmin.DatabaseName, InfoOracleAdmin.GrantID, InfoOracleAdmin.GrantPassword, nil)
-	dsn += "?SSL=enable&SSL Verify=false&WALLET=" + url.QueryEscape(InfoOracleAdmin.FilePath)
+	if InfoOracleAdmin.FilePath != "" {
+		tableSpace = "DATA"
+		dsn += "?SSL=enable&SSL Verify=false&WALLET=" + url.QueryEscape(InfoOracleAdmin.FilePath)
+	}
 
 	conn, err := sql.Open("oracle", dsn)
 	if err != nil {
@@ -37,8 +40,6 @@ func (d *Oracle) createAccount() {
 
 	d.Version, _ = strconv.ParseInt(strings.Split(versionSTR, ".")[0], 10, 64)
 
-	log.Println(versionSTR, d.Version)
-
 	sql = `
 	SELECT COUNT(USERNAME) AS COUNT
 	FROM ALL_USERS
@@ -51,6 +52,11 @@ func (d *Oracle) createAccount() {
 	}
 
 	sql = `CREATE USER ` + Info.GrantID + ` IDENTIFIED BY "` + Info.GrantPassword + `"`
+	if InfoOracleAdmin.FilePath != "" {
+		sql += `
+		DEFAULT TABLESPACE ` + tableSpace + `
+		TEMPORARY TABLESPACE TEMP`
+	}
 	_, err = conn.Exec(sql)
 	if err != nil {
 		panic(err)
@@ -62,7 +68,7 @@ func (d *Oracle) createAccount() {
 		panic(err)
 	}
 
-	sql = `ALTER USER ` + Info.GrantID + ` DEFAULT TABLESPACE DATA QUOTA UNLIMITED ON DATA`
+	sql = `ALTER USER ` + Info.GrantID + ` DEFAULT TABLESPACE ` + tableSpace + ` QUOTA UNLIMITED ON ` + tableSpace
 	_, err = conn.Exec(sql)
 	if err != nil {
 		panic(err)
@@ -70,8 +76,15 @@ func (d *Oracle) createAccount() {
 }
 
 func (d *Oracle) CreateDB() error {
-	d.createAccount()
-	return nil
+	err := Con.Ping()
+	if err != nil {
+		if strings.Contains(err.Error(), "ORA-01017") {
+			d.createAccount()
+			return nil
+		}
+	}
+
+	return err
 }
 
 func (d *Oracle) CreateTable() error {
