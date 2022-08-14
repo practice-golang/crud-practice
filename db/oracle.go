@@ -112,7 +112,6 @@ func (d *Oracle) CreateTable() error {
 	switch true {
 	case d.Version < 12:
 		sql = `
-		-- Create table at version <= 11
 		CREATE TABLE ` + tableName + ` (
 			"IDX"       NUMBER(11),
 			"TITLE"     VARCHAR2(128),
@@ -136,13 +135,8 @@ func (d *Oracle) CreateTable() error {
 		sql = `
 		CREATE OR REPLACE TRIGGER ` + tableNameTrigger + `
 		BEFORE INSERT ON ` + tableName + `
-		FOR EACH ROW
-		WHEN (new.IDX IS NULL)
-		BEGIN
-			SELECT ` + tableNameSequence + `.NEXTVAL INTO
-				:new.IDX
-			FROM DUAL;
-		END;`
+		FOR EACH ROW WHEN (new.IDX IS NULL)
+		BEGIN SELECT ` + tableNameSequence + `.NEXTVAL INTO :new.IDX FROM DUAL; END;`
 
 		_, err = Con.Exec(sql)
 		if err != nil {
