@@ -96,8 +96,6 @@ func (d *Oracle) CreateTable() error {
 		return nil
 	}
 
-	d.Version = 11
-
 	switch true {
 	case d.Version < 12:
 		sql = `
