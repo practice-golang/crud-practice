@@ -114,7 +114,7 @@ func (d *Oracle) CreateTable() error {
 		sql = `
 		-- Create table at version <= 11
 		CREATE TABLE ` + tableName + ` (
-			"IDX"       INTEGER,
+			"IDX"       NUMBER(11),
 			"TITLE"     VARCHAR2(128),
 			"AUTHOR"    VARCHAR2(128),
 
@@ -126,9 +126,7 @@ func (d *Oracle) CreateTable() error {
 			return err
 		}
 
-		sql = `
-		-- Create sequence
-		CREATE SEQUENCE ` + tableNameSequence
+		sql = `CREATE SEQUENCE ` + tableNameSequence
 		_, err = Con.Exec(sql)
 
 		if err != nil {
@@ -154,7 +152,7 @@ func (d *Oracle) CreateTable() error {
 	default:
 		sql = `
 		CREATE TABLE ` + tableName + ` (
-			"IDX"       INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
+			"IDX"       NUMBER(11) GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
 			"TITLE"     VARCHAR2(128),
 			"AUTHOR"    VARCHAR2(128),
 
