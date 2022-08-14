@@ -119,10 +119,16 @@ func (d *Oracle) CreateTable() error {
 
 			UNIQUE("IDX")
 		)`
-		_, _ = Con.Exec(sql)
+		_, err = Con.Exec(sql)
+		if err != nil {
+			panic(err)
+		}
 
 		sql = `CREATE SEQUENCE ` + tableNameSequence
-		_, _ = Con.Exec(sql)
+		_, err = Con.Exec(sql)
+		if err != nil {
+			panic(err)
+		}
 
 		sql = `
 		CREATE OR REPLACE TRIGGER ` + tableNameTrigger + `
