@@ -5,6 +5,7 @@ import (
 	"crud-practice/model"
 	"crud-practice/np"
 	"errors"
+	"log"
 
 	"github.com/blockloop/scan"
 )
@@ -26,11 +27,17 @@ func InsertData(book model.Book) (int64, int64, error) {
 		return count, idx, err
 	}
 
-	sql := ` INSERT INTO ` + tablename + ` (` + columns + `) VALUES (` + holders + `)`
+	sql := `
+	INSERT INTO ` + tablename + ` (
+		` + columns + `
+	) VALUES (
+		` + holders + `
+	)`
 	colSlice := np.CreateMapSlice(book, "insert")
 
 	count, idx, err = db.Obj.Exec(sql, colSlice["values"], "IDX")
 	if err != nil {
+		log.Println(count, idx, err)
 		return count, idx, err
 	}
 
@@ -79,8 +86,8 @@ func UpdateData(book model.Book) (int64, error) {
 
 	sql := `UPDATE ` + tablename + ` SET ` + directive + ` WHERE ` + where
 
-	updateValues := []interface{}{book.Title, book.Author}
-	whereValues := []interface{}{book.Idx}
+	updateValues := []interface{}{book.Title.String, book.Author.String}
+	whereValues := []interface{}{book.Idx.Int64}
 	values := append(updateValues, whereValues...)
 
 	r, err := db.Con.Exec(sql, values...)

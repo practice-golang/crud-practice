@@ -14,9 +14,12 @@ import (
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
+	_ "github.com/sijms/go-ora/v2"
 	"gopkg.in/guregu/null.v4"
 	_ "modernc.org/sqlite"
 )
+
+var appname = "crud-practice"
 
 func beginJob() error {
 	var err error
@@ -25,10 +28,10 @@ func beginJob() error {
 	argLen := len(os.Args) - 1
 	if argLen < 1 {
 		fmt.Println("Usage:")
-		fmt.Println("appmain.exe insert book_name author_name")
-		fmt.Println("appmain.exe select [id_number]")
-		fmt.Println("appmain.exe update id_number book_name author_name")
-		fmt.Println("appmain.exe delete id_number")
+		fmt.Println(appname + " insert book_name author_name")
+		fmt.Println(appname + " select [id_number]")
+		fmt.Println(appname + " update id_number book_name author_name")
+		fmt.Println(appname + " delete id_number")
 		return errors.New("no args")
 	}
 
@@ -132,12 +135,17 @@ func beginJob() error {
 }
 
 func init() {
-	db.Info = config.DatabaseInfoSQLite
+	// db.Info = config.DatabaseInfoSQLite
 	// db.Info = config.DatabaseInfoMySQL
 	// db.Info = config.DatabaseInfoPgPublic
 	// db.Info = config.DatabaseInfoPgSchema
 	// db.Info = config.DatabaseInfoPgOtherDatabase
 	// db.Info = config.DatabaseInfoSqlServer
+
+	// db.Info = config.DatabaseInfoOracle
+	// db.InfoOracleAdmin = config.DatabaseInfoOracleSystem
+	db.Info = config.DatabaseInfoOracleCloud
+	db.InfoOracleAdmin = config.DatabaseInfoOracleCloudAdmin
 }
 
 func main() {

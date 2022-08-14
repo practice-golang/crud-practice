@@ -1,16 +1,13 @@
 package db
 
 import (
+	"crud-practice/model"
 	"database/sql"
 	"errors"
-)
+	"net/url"
+	"strconv"
 
-const (
-	_         = iota
-	SQLITE    // SQLite
-	MYSQL     // MySQL
-	POSTGRES  // PostgreSQL
-	SQLSERVER // MS SQL Server
+	go_ora "github.com/sijms/go-ora/v2"
 )
 
 type (
@@ -40,9 +37,10 @@ type (
 )
 
 var (
-	Info DBInfo   // DB connection info
-	Obj  DBObject // Duck interface
-	Con  *sql.DB  // DB connection
+	Info            DBInfo   // DB connection info
+	InfoOracleAdmin DBInfo   // Oracle Admin connection info
+	Obj             DBObject // Duck interface
+	Con             *sql.DB  // DB connection
 )
 
 func SetupDB() error {
@@ -50,7 +48,7 @@ func SetupDB() error {
 
 	switch Info.DatabaseType {
 
-	case SQLITE:
+	case model.SQLITE:
 		dsn := Info.FilePath
 		Obj = &SQLite{dsn: dsn}
 
@@ -59,7 +57,7 @@ func SetupDB() error {
 			return err
 		}
 
-	case MYSQL:
+	case model.MYSQL:
 		// dsn := Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Protocol + "(" + Info.Addr + ":" + Info.Port + ")/" + Info.DatabaseName
 		dsn := Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Protocol + "(" + Info.Addr + ":" + Info.Port + ")/"
 		Obj = &Mysql{dsn: dsn}
@@ -69,7 +67,7 @@ func SetupDB() error {
 			return err
 		}
 
-	case POSTGRES:
+	case model.POSTGRES:
 		dsn := `host=` + Info.Addr + ` port=` + Info.Port + ` user=` + Info.GrantID + ` password=` + Info.GrantPassword + ` dbname=` + Info.DatabaseName + ` sslmode=disable`
 		Obj = &Postgres{dsn: dsn}
 
@@ -78,9 +76,22 @@ func SetupDB() error {
 			return err
 		}
 
-	case SQLSERVER:
+	case model.SQLSERVER:
 		dsn := "sqlserver://" + Info.GrantID + ":" + Info.GrantPassword + "@" + Info.Addr + ":" + Info.Port + "?" + Info.DatabaseName + "&connction+timeout=30"
 		Obj = &SqlServer{dsn: dsn}
+
+		Con, err = Obj.connect()
+		if err != nil {
+			return err
+		}
+
+	case model.ORACLE:
+		port, _ := strconv.Atoi(Info.Port)
+		dsn := go_ora.BuildUrl(Info.Addr, port, Info.DatabaseName, Info.GrantID, Info.GrantPassword, nil)
+		if Info.FilePath != "" {
+			dsn += "?SSL=enable&SSL Verify=false&WALLET=" + url.QueryEscape(Info.FilePath)
+		}
+		Obj = &Oracle{dsn: dsn}
 
 		Con, err = Obj.connect()
 		if err != nil {

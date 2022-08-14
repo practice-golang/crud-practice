@@ -1,6 +1,7 @@
 package db
 
 import (
+	"crud-practice/model"
 	"os"
 	"testing"
 	"time"
@@ -12,7 +13,7 @@ import (
 func TestSQLite_Exec(t *testing.T) {
 	var err error
 	Info = DBInfo{
-		DatabaseType: SQLITE,
+		DatabaseType: model.SQLITE,
 		DatabaseName: "books",
 		TableName:    "books",
 		FilePath:     "../books.db",

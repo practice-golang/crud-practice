@@ -1,16 +1,19 @@
 package config
 
-import "crud-practice/db"
+import (
+	"crud-practice/db"
+	"crud-practice/model"
+)
 
 var DatabaseInfoSQLite = db.DBInfo{
-	DatabaseType: db.SQLITE,
+	DatabaseType: model.SQLITE,
 	DatabaseName: "books",
 	TableName:    "books",
 	FilePath:     "./books.db",
 }
 
 var DatabaseInfoMySQL = db.DBInfo{
-	DatabaseType:  db.MYSQL,
+	DatabaseType:  model.MYSQL,
 	Protocol:      "tcp",
 	Addr:          "localhost",
 	Port:          "13306",
@@ -22,7 +25,7 @@ var DatabaseInfoMySQL = db.DBInfo{
 }
 
 var DatabaseInfoPgPublic = db.DBInfo{
-	DatabaseType:  db.POSTGRES,
+	DatabaseType:  model.POSTGRES,
 	Protocol:      "tcp",
 	Addr:          "localhost",
 	Port:          "5432",
@@ -34,7 +37,7 @@ var DatabaseInfoPgPublic = db.DBInfo{
 }
 
 var DatabaseInfoPgSchema = db.DBInfo{
-	DatabaseType:  db.POSTGRES,
+	DatabaseType:  model.POSTGRES,
 	Protocol:      "tcp",
 	Addr:          "localhost",
 	Port:          "5432",
@@ -47,7 +50,7 @@ var DatabaseInfoPgSchema = db.DBInfo{
 
 // For not using database name 'postgres', you should create database yourself
 var DatabaseInfoPgOtherDatabase = db.DBInfo{
-	DatabaseType:  db.POSTGRES,
+	DatabaseType:  model.POSTGRES,
 	Protocol:      "tcp",
 	Addr:          "localhost",
 	Port:          "5432",
@@ -59,7 +62,7 @@ var DatabaseInfoPgOtherDatabase = db.DBInfo{
 }
 
 var DatabaseInfoSqlServer = db.DBInfo{
-	DatabaseType:  db.SQLSERVER,
+	DatabaseType:  model.SQLSERVER,
 	Protocol:      "tcp",
 	Addr:          "localhost",
 	Port:          "1433",
@@ -68,4 +71,60 @@ var DatabaseInfoSqlServer = db.DBInfo{
 	TableName:     "books",
 	GrantID:       "sa",
 	GrantPassword: "SQLServer1433",
+}
+
+// ID = system
+var DatabaseInfoOracleSystem = db.DBInfo{
+	DatabaseType:  model.ORACLE,
+	Protocol:      "tcp",
+	Addr:          "localhost",
+	Port:          "1521",
+	DatabaseName:  "XE",
+	SchemaName:    "",
+	TableName:     "books",
+	GrantID:       "system",
+	GrantPassword: "oracle",
+	FilePath:      "",
+}
+
+// GrantID = DatabaseName
+var DatabaseInfoOracle = db.DBInfo{
+	DatabaseType:  model.ORACLE,
+	Protocol:      "tcp",
+	Addr:          "localhost",
+	Port:          "1521",
+	DatabaseName:  "myaccount",
+	SchemaName:    "",
+	TableName:     "books",
+	GrantID:       "myaccount",
+	GrantPassword: "mypassword",
+	FilePath:      "",
+}
+
+// ID = ADMIN
+var DatabaseInfoOracleCloudAdmin = db.DBInfo{
+	DatabaseType:  model.ORACLE,
+	Protocol:      "tcp",
+	Addr:          "adb.ap-chuncheon-1.oraclecloud.com",
+	Port:          "1522",
+	DatabaseName:  "g8364568bcaeec3_myora_low.adb.oraclecloud.com",
+	SchemaName:    "",
+	TableName:     "books",
+	GrantID:       "admin",
+	GrantPassword: "dkssudglrPtpdy0!",
+	FilePath:      "./wallet_admin",
+}
+
+// GrantID = myaccount
+var DatabaseInfoOracleCloud = db.DBInfo{
+	DatabaseType:  model.ORACLE,
+	Protocol:      "tcp",
+	Addr:          "adb.ap-chuncheon-1.oraclecloud.com",
+	Port:          "1522",
+	DatabaseName:  "g8364568bcaeec3_myora_low.adb.oraclecloud.com",
+	SchemaName:    "",
+	TableName:     "books",
+	GrantID:       "edp1096",
+	GrantPassword: "Dkstkswjdqh@08gh",
+	FilePath:      "./wallet_edp1096",
 }
