@@ -105,13 +105,13 @@ var DatabaseInfoOracle = db.DBInfo{
 var DatabaseInfoOracleCloudAdmin = db.DBInfo{
 	DatabaseType:  model.ORACLE,
 	Protocol:      "tcp",
-	Addr:          "adb.ap-chuncheon-1.oraclecloud.com",
+	Addr:          "adb.ap-seoul-1.oraclecloud.com",
 	Port:          "1522",
-	DatabaseName:  "g8364568bcaeec3_myora_low.adb.oraclecloud.com",
+	DatabaseName:  "a12345abcde1_mydbname_low.adb.oraclecloud.com",
 	SchemaName:    "",
 	TableName:     "books",
 	GrantID:       "admin",
-	GrantPassword: "dkssudglrPtpdy0!",
+	GrantPassword: "MyPassword!522",
 	FilePath:      "./wallet_admin",
 }
 
@@ -119,12 +119,12 @@ var DatabaseInfoOracleCloudAdmin = db.DBInfo{
 var DatabaseInfoOracleCloud = db.DBInfo{
 	DatabaseType:  model.ORACLE,
 	Protocol:      "tcp",
-	Addr:          "adb.ap-chuncheon-1.oraclecloud.com",
+	Addr:          "adb.ap-seoul-1.oraclecloud.com",
 	Port:          "1522",
-	DatabaseName:  "g8364568bcaeec3_myora_low.adb.oraclecloud.com",
+	DatabaseName:  "a12345abcde1_mydbname_low.adb.oraclecloud.com",
 	SchemaName:    "",
 	TableName:     "books",
-	GrantID:       "edp1096",
-	GrantPassword: "Dkstkswjdqh@08gh",
-	FilePath:      "./wallet_edp1096",
+	GrantID:       "myaccount",
+	GrantPassword: "MyPassword!522",
+	FilePath:      "./wallet_myaccount",
 }
