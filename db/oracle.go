@@ -75,6 +75,15 @@ func (d *Oracle) createAccount() {
 	}
 }
 
+func (d *Oracle) connect() (*sql.DB, error) {
+	db, err := sql.Open("oracle", d.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
 func (d *Oracle) CreateDB() error {
 	err := Con.Ping()
 	if err != nil {
@@ -92,8 +101,6 @@ func (d *Oracle) CreateTable() error {
 	var count int64
 
 	tableName := strings.ToUpper(`"` + Info.GrantID + `"."` + Info.TableName + `"`)
-	tableNameSequence := strings.ToUpper(`"` + Info.GrantID + `"."` + Info.TableName + `_SEQ"`)
-	tableNameTrigger := strings.ToUpper(`"` + Info.GrantID + `"."` + Info.TableName + `_TRG"`)
 
 	sql := `
 	SELECT COUNT(TABLE_NAME) AS COUNT
@@ -109,64 +116,65 @@ func (d *Oracle) CreateTable() error {
 		return nil
 	}
 
-	switch true {
-	case d.Version < 12:
-		sql = `
-		CREATE TABLE ` + tableName + ` (
-			"IDX"       NUMBER(11),
-			"TITLE"     VARCHAR2(128),
-			"AUTHOR"    VARCHAR2(128),
+	sql = `
+	CREATE TABLE ` + tableName + ` (
+		"IDX"       NUMBER(11) GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
+		"TITLE"     VARCHAR2(128),
+		"AUTHOR"    VARCHAR2(128),
 
-			UNIQUE("IDX")
-		)`
-		_, err = Con.Exec(sql)
-		if err != nil {
-			panic(err)
-		}
+		UNIQUE("IDX")
+	)`
 
-		sql = `CREATE SEQUENCE ` + tableNameSequence
-		_, err = Con.Exec(sql)
-		if err != nil {
-			panic(err)
-		}
-
-		sql = `
-		CREATE OR REPLACE TRIGGER ` + tableNameTrigger + `
-		BEFORE INSERT ON ` + tableName + `
-		FOR EACH ROW WHEN (new.IDX IS NULL)
-		BEGIN SELECT ` + tableNameSequence + `.NEXTVAL INTO :new.IDX FROM DUAL; END;`
-
-		_, err = Con.Exec(sql)
-		if err != nil {
-			panic(err)
-		}
-
-	default:
-		sql = `
-		CREATE TABLE ` + tableName + ` (
-			"IDX"       NUMBER(11) GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
-			"TITLE"     VARCHAR2(128),
-			"AUTHOR"    VARCHAR2(128),
-
-			UNIQUE("IDX")
-		)`
-
-		_, err = Con.Exec(sql)
-		if err != nil {
-			panic(err)
-		}
+	_, err = Con.Exec(sql)
+	if err != nil {
+		panic(err)
 	}
 
 	return nil
 }
 
-func (d *Oracle) connect() (*sql.DB, error) {
-	db, err := sql.Open("oracle", d.dsn)
+func (d *Oracle) DropTable() error {
+	var err error
+	var count int64
+
+	tableName := strings.ToUpper(`"` + Info.GrantID + `"."` + Info.TableName + `"`)
+
+	sql := `
+	SELECT COUNT(TABLE_NAME) AS COUNT
+	FROM user_tables
+	WHERE TABLE_NAME = '` + strings.ToUpper(Info.TableName) + `'`
+
+	err = Con.QueryRow(sql).Scan(&count)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db, nil
+	if count == 0 {
+		return nil
+	}
+
+	sql = `DROP TABLE ` + tableName
+	_, err = Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Oracle) RenameTable() error {
+	var err error
+
+	tableName := strings.ToUpper(`"` + Info.TableName + `"`)
+	tableNameRename := strings.ToUpper(`"` + Info.TableName + `_RENAMED"`)
+
+	sql := `ALTER TABLE ` + tableName + ` RENAME TO ` + tableNameRename
+	_, err = Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Oracle) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {

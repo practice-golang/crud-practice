@@ -127,6 +127,18 @@ func beginJob() error {
 
 		log.Println("Delete count:", count)
 
+	case "drop-table":
+		err := db.Obj.DropTable()
+		if err != nil {
+			log.Fatal("DropTable:", err)
+		}
+
+	case "rename-table":
+		err := db.Obj.RenameTable()
+		if err != nil {
+			log.Fatal("RenameTable:", err)
+		}
+
 	default:
 		return errors.New("check inputed parameters")
 	}
@@ -142,10 +154,10 @@ func init() {
 	// db.Info = config.DatabaseInfoPgOtherDatabase
 	// db.Info = config.DatabaseInfoSqlServer
 
-	// db.Info = config.DatabaseInfoOracle
-	// db.InfoOracleAdmin = config.DatabaseInfoOracleSystem
-	db.Info = config.DatabaseInfoOracleCloud
-	db.InfoOracleAdmin = config.DatabaseInfoOracleCloudAdmin
+	db.Info = config.DatabaseInfoOracle
+	db.InfoOracleAdmin = config.DatabaseInfoOracleSystem
+	// db.Info = config.DatabaseInfoOracleCloud
+	// db.InfoOracleAdmin = config.DatabaseInfoOracleCloudAdmin
 }
 
 func main() {

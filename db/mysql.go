@@ -6,6 +6,15 @@ import (
 
 type Mysql struct{ dsn string }
 
+func (d *Mysql) connect() (*sql.DB, error) {
+	db, err := sql.Open("mysql", d.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
 func (d *Mysql) CreateDB() error {
 	sql := `CREATE DATABASE IF NOT EXISTS ` + Info.DatabaseName + `;`
 	_, err := Con.Exec(sql)
@@ -36,13 +45,24 @@ func (d *Mysql) CreateTable() error {
 	return nil
 }
 
-func (d *Mysql) connect() (*sql.DB, error) {
-	db, err := sql.Open("mysql", d.dsn)
+func (d *Mysql) DropTable() error {
+	sql := `DROP TABLE ` + Info.DatabaseName + `.` + Info.TableName + `;`
+	_, err := Con.Exec(sql)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db, nil
+	return nil
+}
+
+func (d *Mysql) RenameTable() error {
+	sql := `RENAME TABLE ` + Info.DatabaseName + `.` + Info.TableName + ` TO ` + Info.DatabaseName + `.` + Info.TableName + `_RENAMED;`
+	_, err := Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Mysql) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {

@@ -8,6 +8,15 @@ import (
 
 type Postgres struct{ dsn string }
 
+func (d *Postgres) connect() (*sql.DB, error) {
+	db, err := sql.Open("postgres", d.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
 // CreateDB - Create DB and Schema
 func (d *Postgres) CreateDB() error {
 	var err error
@@ -61,13 +70,24 @@ func (d *Postgres) CreateTable() error {
 	return nil
 }
 
-func (d *Postgres) connect() (*sql.DB, error) {
-	db, err := sql.Open("postgres", d.dsn)
+func (d *Postgres) DropTable() error {
+	sql := `DROP TABLE ` + Info.SchemaName + `.` + Info.TableName + `;`
+	_, err := Con.Exec(sql)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db, nil
+	return nil
+}
+
+func (d *Postgres) RenameTable() error {
+	sql := `ALTER TABLE ` + Info.SchemaName + `.` + Info.TableName + ` RENAME TO ` + Info.TableName + `;`
+	_, err := Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Postgres) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {

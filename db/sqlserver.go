@@ -6,6 +6,15 @@ import (
 
 type SqlServer struct{ dsn string }
 
+func (d *SqlServer) connect() (*sql.DB, error) {
+	db, err := sql.Open("sqlserver", d.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
 func (d *SqlServer) CreateDB() error {
 	sql := `
 	USE master
@@ -41,13 +50,29 @@ func (d *SqlServer) CreateTable() error {
 	return nil
 }
 
-func (d *SqlServer) connect() (*sql.DB, error) {
-	db, err := sql.Open("sqlserver", d.dsn)
+func (d *SqlServer) DropTable() error {
+	sql := `USE ` + Info.DatabaseName + `
+	IF OBJECT_ID(N'` + Info.TableName + `', N'U') IS NOT NULL
+	DROP TABLE ` + Info.TableName + `;`
+	_, err := Con.Exec(sql)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db, nil
+	return nil
+}
+
+func (d *SqlServer) RenameTable() error {
+	sql := `USE ` + Info.DatabaseName + `
+	IF OBJECT_ID(N'` + Info.TableName + `', N'U') IS NOT NULL
+	EXEC sp_rename '` + Info.TableName + `', '` + Info.TableName + `_renamed', 'OBJECT'
+	`
+	_, err := Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *SqlServer) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {

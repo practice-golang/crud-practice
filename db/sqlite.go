@@ -35,6 +35,26 @@ func (d *SQLite) CreateTable() error {
 	return nil
 }
 
+func (d *SQLite) DropTable() error {
+	sql := `DROP TABLE "` + Info.TableName + `";`
+	_, err := Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *SQLite) RenameTable() error {
+	sql := `ALTER TABLE "` + Info.TableName + `" RENAME TO "` + Info.TableName + `_RENAMED";`
+	_, err := Con.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (d *SQLite) Exec(sql string, colValues []interface{}, options string) (int64, int64, error) {
 	var err error
 	var count int64 = 0
